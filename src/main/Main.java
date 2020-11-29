@@ -3,6 +3,7 @@ package main;
 import checker.Checkstyle;
 import checker.Checker;
 import common.Constants;
+import fileio.ActionInputData;
 import fileio.Input;
 import fileio.InputLoader;
 import fileio.Writer;
@@ -23,6 +24,40 @@ public final class Main {
      * for coding style
      */
     private Main() {
+    }
+
+    /**
+     * Handles favorite commands
+     * */
+    private static void favorite(ActionInputData action, Input input) {
+        ;
+    }
+
+    /**
+     * Handles command actions
+     * */
+    private static void command(ActionInputData action, Input input) {
+        switch (action.getType()) {
+            case "favorite":
+                favorite(action, input);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Handles query actions
+     * */
+    private static void query(ActionInputData action, Input input) {
+        ;
+    }
+
+    /**
+     * Handles recommendation actions
+     * */
+    public static void recommendation(ActionInputData action, Input input) {
+        ;
     }
 
     /**
@@ -52,7 +87,8 @@ public final class Main {
             }
         }
 
-        checker.iterateFiles(Constants.RESULT_PATH, Constants.REF_PATH, Constants.TESTS_PATH);
+        checker.iterateFiles(Constants.RESULT_PATH, Constants.REF_PATH,
+                Constants.TESTS_PATH);
         Checkstyle test = new Checkstyle();
         test.testCheckstyle();
     }
@@ -71,6 +107,21 @@ public final class Main {
         JSONArray arrayResult = new JSONArray();
 
         //TODO add here the entry point to your implementation
+        for (ActionInputData action : input.getCommands()) {
+            switch (action.getActionType()) {
+                case "command":
+                    command(action, input);
+                    break;
+                case "query":
+                    query(action, input);
+                    break;
+                case "recommendation":
+                    recommendation(action, input);
+                    break;
+                default:
+                    break;
+            }
+        }
 
         fileWriter.closeJSON(arrayResult);
     }

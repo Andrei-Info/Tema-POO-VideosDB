@@ -1,12 +1,11 @@
 package entertainment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Information about a season of a tv show
  * <p>
  * DO NOT MODIFY
+ * Modified: Needed to add number of people who rated the season and change the
+ * rating into a single value.
  */
 public final class Season {
     /**
@@ -18,14 +17,17 @@ public final class Season {
      */
     private int duration;
     /**
-     * List of ratings for each season
+     * Rating of a season
      */
-    private List<Double> ratings;
+    private double rating = 0;
+    /**
+     * Number of people who rated the season
+     */
+    private int numberOfRaters = 0;
 
     public Season(final int currentSeason, final int duration) {
         this.currentSeason = currentSeason;
         this.duration = duration;
-        this.ratings = new ArrayList<>();
     }
 
     public int getDuration() {
@@ -36,12 +38,14 @@ public final class Season {
         this.duration = duration;
     }
 
-    public List<Double> getRatings() {
-        return ratings;
+    public double getRating() {
+        return rating;
     }
 
-    public void setRatings(final List<Double> ratings) {
-        this.ratings = ratings;
+    public void addRating(final double rating) {
+        this.rating = (this.rating * numberOfRaters + rating)
+                / (numberOfRaters + 1);
+        numberOfRaters++;
     }
 
     @Override

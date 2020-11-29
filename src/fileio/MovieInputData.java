@@ -6,12 +6,21 @@ import java.util.ArrayList;
  * Information about a movie, retrieved from parsing the input test files
  * <p>
  * DO NOT MODIFY
+ * Modification: Movies needed a rating
  */
 public final class MovieInputData extends ShowInput {
     /**
      * Duration in minutes of a season
      */
     private final int duration;
+    /**
+     * Rating of the movie
+     */
+    private double rating = 0;
+    /**
+     * Number of people who rated the movie
+     */
+    private int numberOfRaters = 0;
 
     public MovieInputData(final String title, final ArrayList<String> cast,
                           final ArrayList<String> genres, final int year,
@@ -22,6 +31,16 @@ public final class MovieInputData extends ShowInput {
 
     public int getDuration() {
         return duration;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void addRating(double rating) {
+        this.rating = (this.rating * numberOfRaters + rating)
+                / (numberOfRaters + 1);
+        numberOfRaters++;
     }
 
     @Override

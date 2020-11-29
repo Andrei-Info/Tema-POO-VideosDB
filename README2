@@ -1,0 +1,20 @@
+Files created:
+dbentities package:
+    Rating.java
+
+Files changed:
+fileio package:
+    MovieInputData - added rating and numberOfRaters fields and getRating()
+and addRating() methods
+    UserInputData - added ratings field for ratings given by the user and
+getRatings() and addRating() methods. Changed "movies" into "shows"
+
+entertainment package:
+    Season - added a counter for how many people rated the season,
+numberOfRaters, changed rating from list into a single value
+
+main.Main:
+    Added methods: command(), favorite(), querry(), recommendation().
+    favorite():
+        Adds a seen video to a users favorites. Serials are added as a whole
+(not a season at a time).

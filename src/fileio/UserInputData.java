@@ -1,5 +1,7 @@
 package fileio;
 
+import dbentities.Rating;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -7,6 +9,7 @@ import java.util.Map;
  * Information about an user, retrieved from parsing the input test files
  * <p>
  * DO NOT MODIFY
+ * Modified: Added ratings given by the user, turned "movies" into "shows"
  */
 public final class UserInputData {
     /**
@@ -18,20 +21,24 @@ public final class UserInputData {
      */
     private final String subscriptionType;
     /**
-     * The history of the movies seen
+     * The history of the shows seen
      */
     private final Map<String, Integer> history;
     /**
-     * Movies added to favorites
+     * Shows added to favorites
      */
-    private final ArrayList<String> favoriteMovies;
+    private final ArrayList<String> favoriteShows;
+    /**
+     * User's given ratings
+     */
+    private final ArrayList<Rating> ratings = new ArrayList<>();
 
     public UserInputData(final String username, final String subscriptionType,
                          final Map<String, Integer> history,
-                         final ArrayList<String> favoriteMovies) {
+                         final ArrayList<String> favoriteShows) {
         this.username = username;
         this.subscriptionType = subscriptionType;
-        this.favoriteMovies = favoriteMovies;
+        this.favoriteShows = favoriteShows;
         this.history = history;
     }
 
@@ -47,8 +54,16 @@ public final class UserInputData {
         return subscriptionType;
     }
 
-    public ArrayList<String> getFavoriteMovies() {
-        return favoriteMovies;
+    public ArrayList<String> getFavoriteShows() {
+        return favoriteShows;
+    }
+
+    public ArrayList<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void addRating(Rating rating) {
+        ratings.add(rating);
     }
 
     @Override
@@ -57,6 +72,6 @@ public final class UserInputData {
                 + username + '\'' + ", subscriptionType='"
                 + subscriptionType + '\'' + ", history="
                 + history + ", favoriteMovies="
-                + favoriteMovies + '}';
+                + favoriteShows + '}';
     }
 }
