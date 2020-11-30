@@ -75,4 +75,7 @@ public final class Constants {
     public static final int MAX_LENGTH = 50;
 
     // add any constants you think you may use
+    public static final String FAVORITE = "favorite";
+    public static final String VIEW = "view";
+    public static final String RATING = "rating";
 }

@@ -5,9 +5,10 @@ dbentities package:
 Files changed:
 fileio package:
     MovieInputData - added rating and numberOfRaters fields and getRating()
-and addRating() methods
+and addRating() methods.
     UserInputData - added ratings field for ratings given by the user and
-getRatings() and addRating() methods. Changed "movies" into "shows"
+getRatings(), addRating() and addFavoriteShow() methods. Changed "movies"
+into "shows".
 
 entertainment package:
     Season - added a counter for how many people rated the season,

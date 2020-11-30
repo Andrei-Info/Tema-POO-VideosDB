@@ -66,6 +66,10 @@ public final class UserInputData {
         ratings.add(rating);
     }
 
+    public void addFavoriteShow(String show) {
+        favoriteShows.add(show);
+    }
+
     @Override
     public String toString() {
         return "UserInputData{" + "username='"
