@@ -19,4 +19,16 @@ public class Rating {
         this.title = title;
         this.season = season;
     }
+
+    public double getScore() {
+        return score;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public int getSeason() {
+        return season;
+    }
 }

@@ -1,6 +1,21 @@
+Important note: The following README contains some information about most
+additions to the project. For more in-depth information, the code contains
+extensive comments.
+
+-------------------------------------------------------------------------------
+
 Files created:
 dbentities package:
-    Rating.java
+    Rating - A user's rating, containing score, title and season fields with
+getter methods for each.
+    RatedActor - Object used for sorting actors in a querry, with actor (name)
+and rating fields, with getter methods for each.
+    AwardedActor - Object used for sorting  actors in a querry, with actor
+(name) and (award) count fields, with getter methods for each.
+    RatedShow - Object used for sorting shows in a querry, with name and
+rating fields, with getter methods for each.
+
+-------------------------------------------------------------------------------
 
 Files changed:
 fileio package:
@@ -9,13 +24,44 @@ and addRating() methods.
     UserInputData - added ratings field for ratings given by the user and
 getRatings(), addRating() and addFavoriteShow() methods. Changed "movies"
 into "shows".
+    SerialInputData - added getRating() method, which returns the average
+rating of all seasons.
+
+-------------------------------------------------------------------------------
 
 entertainment package:
     Season - added a counter for how many people rated the season,
-numberOfRaters, changed rating from list into a single value
+numberOfRaters, changed rating from list into a single value.
+
+-------------------------------------------------------------------------------
 
 main.Main:
-    Added methods: command(), favorite(), querry(), recommendation().
+    Added methods: command(), favorite(), view(), rating(), querry(),
+average(), awards(), filterDescription(), checkFilters(), ratingQuery(),
+recommendation().
+
+    command(), querry() and recommendation():
+        These functions simply redirect to more complex functions.
     favorite():
         Adds a seen video to a users favorites. Serials are added as a whole
 (not a season at a time).
+    view():
+        Adds a video to a user's history, if necessary, and increments its view
+count.
+    rating():
+        Adds a rating to a user's reviews and changes a show's rating
+accordingly.
+    average():
+        Outputs the querry result of the first N actors sorted by the average
+rating of the shows they played in.
+    awards():
+        Outputs the querry result of all actors who received the given awards,
+sorted by the number of awards.
+    filterDescription():
+        Outputs the querry result of all the actors who have all the given
+keywords in their description, sorted in alphabetical order by name.
+    checkFilters():
+        Returns true if a show fits all given filters and false otherwise.
+    ratingQuery():
+        Outputs the query result of the first N videos that fit the filters,
+sorted by rating.

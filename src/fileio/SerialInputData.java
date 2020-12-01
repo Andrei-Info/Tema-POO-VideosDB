@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * Information about a tv show, retrieved from parsing the input test files
  * <p>
  * DO NOT MODIFY
+ * Modified: Added getRating() method
  */
 public final class SerialInputData extends ShowInput {
     /**
@@ -34,6 +35,16 @@ public final class SerialInputData extends ShowInput {
 
     public ArrayList<Season> getSeasons() {
         return seasons;
+    }
+
+    public double getRating() {
+        double sum = 0;
+
+        for (Season season : seasons) {
+            sum += season.getRating();
+        }
+
+        return sum / numberOfSeasons;
     }
 
     @Override
