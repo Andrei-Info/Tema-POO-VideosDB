@@ -269,7 +269,7 @@ public final class Main {
             // Sort descending
             actors.sort((actor1, actor2) -> {
                 if (actor1.getRating() == actor2.getRating()) {
-                    return actor1.getActor().compareTo(actor2.getActor());
+                    return -actor1.getActor().compareTo(actor2.getActor());
                 } else {
                     return -Double.compare(actor1.getRating(),
                             actor2.getRating());
@@ -312,19 +312,21 @@ public final class Main {
         int awardCount;
         for (ActorInputData actor : input.getActors()) {
             hasAwards = true;
-            awardCount = 0;
             // Check for each award in the filter
             for(String award : action.getFilters().get(Constants.AWARDS_INDEX)) {
                 if (!actor.getAwards().containsKey(ActorsAwards.valueOf(award))) {
                     hasAwards = false;
-                } else {
-                    // Count the awards the actor has relevant to the filter
-                    awardCount += actor.getAwards().get(ActorsAwards.valueOf(award));
                 }
             }
 
             // Add actor to map if they have all awards
             if (hasAwards) {
+                // Count the total number of awards the actor has
+                awardCount = 0;
+                for (ActorsAwards award : actor.getAwards().keySet()) {
+                    awardCount += actor.getAwards().get(award);
+                }
+
                 count.put(actor.getName(), awardCount);
             }
         }
@@ -349,7 +351,7 @@ public final class Main {
             // Sort descending
             actors.sort((actor1, actor2) -> {
                 if (actor1.getCount() == actor2.getCount()) {
-                    return actor1.getName().compareTo(actor2.getName());
+                    return -actor1.getName().compareTo(actor2.getName());
                 } else {
                     return -Integer.compare(actor1.getCount(), actor2.getCount());
                 }
@@ -385,7 +387,17 @@ public final class Main {
             // For each keyowrd in the filter
             for (String keyword : action.getFilters().get(Constants.WORDS_INDEX)) {
                 // Make sure it's part of the actor's description
-                if (!actor.getCareerDescription().contains(keyword)) {
+                StringTokenizer stringTokenizer = new StringTokenizer(actor.getCareerDescription()
+                        .toLowerCase(), Constants.DELIM);
+                boolean hasThisKeyword = false;
+
+                while (stringTokenizer.hasMoreTokens()) {
+                    if (keyword.equals(stringTokenizer.nextToken())) {
+                        hasThisKeyword = true;
+                        break;
+                    }
+                }
+                if (!hasThisKeyword) {
                     hasAllKeywords = false;
                     break;
                 }
@@ -449,17 +461,19 @@ public final class Main {
         // from 0 and fit all the filters
         ArrayList<RatedShow> shows = new ArrayList<>();
 
-        // Do so for each serial
-        for (SerialInputData serial : input.getSerials()) {
-            if (serial.getRating() != 0 && checkFilters(action.getFilters(), serial)) {
-                shows.add(new RatedShow(serial.getTitle(), serial.getRating()));
+        if (action.getObjectType().equals(Constants.MOVIES)) {
+            // Do so for each movie
+            for (MovieInputData movie : input.getMovies()) {
+                if (movie.getRating() != 0 && checkFilters(action.getFilters(), movie)) {
+                    shows.add(new RatedShow(movie.getTitle(), movie.getRating()));
+                }
             }
-        }
-
-        // Do so for each movie
-        for (MovieInputData movie : input.getMovies()) {
-            if (movie.getRating() != 0 && checkFilters(action.getFilters(), movie)) {
-                shows.add(new RatedShow(movie.getTitle(), movie.getRating()));
+        } else {
+            // Do so for each serial
+            for (SerialInputData serial : input.getSerials()) {
+                if (serial.getRating() != 0 && checkFilters(action.getFilters(), serial)) {
+                    shows.add(new RatedShow(serial.getTitle(), serial.getRating()));
+                }
             }
         }
 
@@ -477,7 +491,7 @@ public final class Main {
             // Sort descending
             shows.sort((show1, show2) -> {
                 if (show1.getRating() == show2.getRating()) {
-                    return show1.getName().compareTo(show2.getName());
+                    return -show1.getName().compareTo(show2.getName());
                 } else {
                     return -Double.compare(show1.getRating(), show2.getRating());
                 }
@@ -522,6 +536,17 @@ public final class Main {
             }
         }
 
+        // Remove all shows from the map if they don't fit the object_type filter
+        if (action.getObjectType().equals(Constants.MOVIES)) {
+            for (SerialInputData serial : input.getSerials()) {
+                showsMap.remove(serial.getTitle());
+            }
+        } else {
+            for (MovieInputData movie : input.getMovies()) {
+                showsMap.remove(movie.getTitle());
+            }
+        }
+
         // Add all show from the map into an array if they fit the filters
         ArrayList<FavoritedShow> shows = new ArrayList<>();
         ArrayList<ShowInput> allShows = new ArrayList<>(input.getMovies());
@@ -552,7 +577,7 @@ public final class Main {
             // Sort descending
             shows.sort((show1, show2) -> {
                 if (show1.getCount() == show2.getCount()) {
-                    return show1.getName().compareTo(show2.getName());
+                    return -show1.getName().compareTo(show2.getName());
                 } else {
                     return -Integer.compare(show1.getCount(), show2.getCount());
                 }
@@ -586,16 +611,20 @@ public final class Main {
     private static void longest(ActionInputData action, Input input, JSONObject output) {
         // Add all shows that fit the filters to an array list
         ArrayList<DurationShow> shows = new ArrayList<>();
-        // Do so for each movie
-        for (MovieInputData movie : input.getMovies()) {
-            if (checkFilters(action.getFilters(), movie)) {
-                shows.add(new DurationShow(movie.getTitle(), movie.getDuration()));
+
+        if (action.getObjectType().equals(Constants.MOVIES)) {
+            // Do so for each movie
+            for (MovieInputData movie : input.getMovies()) {
+                if (checkFilters(action.getFilters(), movie)) {
+                    shows.add(new DurationShow(movie.getTitle(), movie.getDuration()));
+                }
             }
-        }
-        // Do so for each serial
-        for (SerialInputData serial : input.getSerials()) {
-            if (checkFilters(action.getFilters(), serial)) {
-                shows.add(new DurationShow(serial.getTitle(), serial.getDuration()));
+        } else {
+            // Do so for each serial
+            for (SerialInputData serial : input.getSerials()) {
+                if (checkFilters(action.getFilters(), serial)) {
+                    shows.add(new DurationShow(serial.getTitle(), serial.getDuration()));
+                }
             }
         }
 
@@ -613,7 +642,7 @@ public final class Main {
             // Sort descending
             shows.sort((show1, show2) -> {
                 if (show1.getDuration() == show2.getDuration()) {
-                    return show1.getName().compareTo(show2.getName());
+                    return -show1.getName().compareTo(show2.getName());
                 } else {
                     return -Integer.compare(show1.getDuration(), show2.getDuration());
                 }
@@ -658,16 +687,22 @@ public final class Main {
 
         // Add all shows that fit the filter into an array
         ArrayList<ViewedShow> shows = new ArrayList<>();
-        ArrayList<ShowInput> allShows = new ArrayList<>(input.getMovies());
-        allShows.addAll(input.getSerials());
 
         for (String show : showsMap.keySet()) {
-            // Search for the show in all movies and serials
-            for (ShowInput showInput : allShows) {
-                if (showInput.getTitle().equals(show) && checkFilters(action.getFilters(),
-                        showInput)) {
-                    shows.add(new ViewedShow(show, showsMap.get(show)));
-                    break;
+            // Search for the show in the appropiate show type
+            if (action.getObjectType().equals(Constants.MOVIES)) {
+                for (MovieInputData movie : input.getMovies()) {
+                    if (movie.getTitle().equals(show) && checkFilters(action.getFilters(), movie))
+                    {
+                        shows.add(new ViewedShow(show, showsMap.get(show)));
+                    }
+                }
+            } else {
+                for (SerialInputData serial : input.getSerials()) {
+                    if (serial.getTitle().equals(show) && checkFilters(action.getFilters(),
+                            serial)) {
+                        shows.add(new ViewedShow(show, showsMap.get(show)));
+                    }
                 }
             }
         }
@@ -686,7 +721,7 @@ public final class Main {
             // Sort descending
             shows.sort((show1, show2) -> {
                 if (show1.getViewCount() == show2.getViewCount()) {
-                    return show1.getName().compareTo(show2.getName());
+                    return -show1.getName().compareTo(show2.getName());
                 } else {
                     return -Integer.compare(show1.getViewCount(), show2.getViewCount());
                 }
@@ -740,7 +775,7 @@ public final class Main {
             // Sort descending
             users.sort((show1, show2) -> {
                 if (show1.getRatingCount() == show2.getRatingCount()) {
-                    return show1.getName().compareTo(show2.getName());
+                    return -show1.getName().compareTo(show2.getName());
                 } else {
                     return -Integer.compare(show1.getRatingCount(), show2.getRatingCount());
                 }
