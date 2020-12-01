@@ -33,7 +33,8 @@ public final class MovieInputData extends ShowInput {
         return duration;
     }
 
-    public Double getRating() {
+    @Override
+    public double getRating() {
         return rating;
     }
 

@@ -13,7 +13,17 @@ and rating fields, with getter methods for each.
     AwardedActor - Object used for sorting  actors in a querry, with actor
 (name) and (award) count fields, with getter methods for each.
     RatedShow - Object used for sorting shows in a querry, with name and
-rating fields, with getter methods for each.
+rating fields, with getter methods for each and a toString() method.
+    FavoritedShow - Object used for sorting shows in a querry, with name and
+count fields, with getter methods for each.
+    DurationShow - Object used for sorting shows in a querry, with name and
+duration fields, with getter methods for each.
+    ViewedShow - Object used for sorting shows in a querry, with name and
+viewCount fields, with getter methods for each.
+    RatingUser - Object used for sorting users in a querry, with name and
+ratingCount fields, with getter methods for each.
+    RatedGenre - Object used for sorting genres in a recommandation, with name
+and rating fields, with getter methods for each.
 
 -------------------------------------------------------------------------------
 
@@ -25,7 +35,9 @@ and addRating() methods.
 getRatings(), addRating() and addFavoriteShow() methods. Changed "movies"
 into "shows".
     SerialInputData - added getRating() method, which returns the average
-rating of all seasons.
+rating of all seasons, and getDuration() method, which returns the total
+duration of all seasons.
+    ShowInput - added abstract method getRating()
 
 -------------------------------------------------------------------------------
 
@@ -38,10 +50,11 @@ numberOfRaters, changed rating from list into a single value.
 main.Main:
     Added methods: command(), favorite(), view(), rating(), querry(),
 average(), awards(), filterDescription(), checkFilters(), ratingQuery(),
-recommendation().
+favoriteQuery(), longest(), mostViewed(), numberOfRatings(), recommendation().
 
     command(), querry() and recommendation():
         These functions simply redirect to more complex functions.
+
     favorite():
         Adds a seen video to a users favorites. Serials are added as a whole
 (not a season at a time).
@@ -51,6 +64,7 @@ count.
     rating():
         Adds a rating to a user's reviews and changes a show's rating
 accordingly.
+
     average():
         Outputs the querry result of the first N actors sorted by the average
 rating of the shows they played in.
@@ -65,3 +79,34 @@ keywords in their description, sorted in alphabetical order by name.
     ratingQuery():
         Outputs the query result of the first N videos that fit the filters,
 sorted by rating.
+    favoriteQuery():
+        Outputs the query restul of the first N videos that fit the filters,
+sorted by the number of times users favorited them.
+    longest():
+        Outputs the query result of the first N videos that fit the filters,
+sorted by their duration.
+    mostViewed():
+        Outputs the query result of the first N videos that fit the filters,
+sorted by their view count.
+    numberOfRatings():
+        Outputs the query restult of the first N users sorted by the number of
+ratings they have given.
+
+    findUser():
+        Retruns a user's "profile" (UserInputData) based on the given username.
+    standard():
+        Outputs the first video the user hasn't seen.
+    bestUnseen():
+        Outputs the best video the user hasn't seen with the highest rating.
+    findShow():
+        Returns a show's input data for a given show name.
+    findAllGenreShows():
+        Returns a list of all the shows in a genre with a given name.
+    popular():
+        Outputs the best video the user hasn't seen from the most popular
+genre.
+    favoriteRecom():
+        Outputs the best video the user hasn't seen from the most favorited
+show.
+    search():
+        Outputs all shows the user hasn't seen, sorted by their rating.

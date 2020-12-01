@@ -86,4 +86,11 @@ public final class Constants {
     public static final String RATINGS = "ratings";
     public static final int YEAR_INDEX = 0;
     public static final int GENRE_INDEX = 1;
+    public static final String LONGEST = "longest";
+    public static final String MOST_VIEWED = "most_viewed";
+    public static final String STANDARD = "standard";
+    public static final String BEST_UNSEEN = "best_unseen";
+    public static final String POPULAR = "popular";
+    public static final String PREMIUM = "PREMIUM";
+    public static final String SEARCH = "search";
 }
