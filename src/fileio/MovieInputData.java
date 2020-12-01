@@ -38,8 +38,11 @@ public final class MovieInputData extends ShowInput {
         return rating;
     }
 
-    public void addRating(double rating) {
-        this.rating = (this.rating * numberOfRaters + rating)
+    /**
+     * Adds a rating to the movie.
+     */
+    public void addRating(final double newRating) {
+        this.rating = (this.rating * numberOfRaters + newRating)
                 / (numberOfRaters + 1);
         numberOfRaters++;
     }

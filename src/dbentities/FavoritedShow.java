@@ -1,10 +1,10 @@
 package dbentities;
 
-public class FavoritedShow {
+public final class FavoritedShow {
     private final String name;
     private final int count;
 
-    public FavoritedShow(String name, int count) {
+    public FavoritedShow(final String name, final int count) {
         this.name = name;
         this.count = count;
     }

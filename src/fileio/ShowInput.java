@@ -50,5 +50,8 @@ public abstract class ShowInput {
         return genres;
     }
 
+    /**
+     * This method should return the ratting of the given show, 0 if it has none.
+     * */
     public abstract double getRating();
 }

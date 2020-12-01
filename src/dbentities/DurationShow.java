@@ -1,10 +1,10 @@
 package dbentities;
 
-public class DurationShow {
+public final class DurationShow {
     private final String name;
     private final int duration;
 
-    public DurationShow(String name, int duration) {
+    public DurationShow(final String name, final int duration) {
         this.name = name;
         this.duration = duration;
     }

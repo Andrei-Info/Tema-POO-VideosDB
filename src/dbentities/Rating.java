@@ -1,6 +1,6 @@
 package dbentities;
 
-public class Rating {
+public final class Rating {
     /**
      * Rating of video, between 0 and 10
      */
@@ -14,7 +14,7 @@ public class Rating {
      */
     private final int season;
 
-    public Rating(double score, String title, int season) {
+    public Rating(final double score, final String title, final int season) {
         this.score = score;
         this.title = title;
         this.season = season;

@@ -62,11 +62,17 @@ public final class UserInputData {
         return ratings;
     }
 
-    public void addRating(Rating rating) {
+    /**
+     * Adds a rating given by the user to his profile.
+     */
+    public void addRating(final Rating rating) {
         ratings.add(rating);
     }
 
-    public void addFavoriteShow(String show) {
+    /**
+     * Adds a show to the user's list of favorites.
+     */
+    public void addFavoriteShow(final String show) {
         favoriteShows.add(show);
     }
 

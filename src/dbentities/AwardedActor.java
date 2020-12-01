@@ -1,10 +1,10 @@
 package dbentities;
 
-public class AwardedActor {
+public final class AwardedActor {
     private final String name;
     private final int count;
 
-    public AwardedActor(String name, int count) {
+    public AwardedActor(final String name, final int count) {
         this.name = name;
         this.count = count;
     }

@@ -48,6 +48,9 @@ public final class SerialInputData extends ShowInput {
         return sum / numberOfSeasons;
     }
 
+    /**
+     * This method returns the duration of a serial's seasons, in total.
+     */
     public int getDuration() {
         int duration = 0;
 

@@ -1,10 +1,10 @@
 package dbentities;
 
-public class RatedActor {
+public final class RatedActor {
     private final String actor;
     private final double rating;
 
-    public RatedActor(String actor, double rating) {
+    public RatedActor(final String actor, final double rating) {
         this.actor = actor;
         this.rating = rating;
     }
@@ -19,9 +19,9 @@ public class RatedActor {
 
     @Override
     public String toString() {
-        return "RatedActor{" +
-                "actor='" + actor + '\'' +
-                ", rating=" + rating +
-                '}';
+        return "RatedActor{"
+                + "actor='" + actor + '\''
+                + ", rating=" + rating
+                + '}';
     }
 }

@@ -4,9 +4,25 @@ import actor.ActorsAwards;
 import checker.Checkstyle;
 import checker.Checker;
 import common.Constants;
-import dbentities.*;
+import dbentities.AwardedActor;
+import dbentities.DurationShow;
+import dbentities.FavoritedShow;
+import dbentities.RatedActor;
+import dbentities.RatedGenre;
+import dbentities.RatedShow;
+import dbentities.Rating;
+import dbentities.RatingUser;
+import dbentities.ViewedShow;
 import entertainment.Season;
-import fileio.*;
+import fileio.ActionInputData;
+import fileio.ActorInputData;
+import fileio.Input;
+import fileio.InputLoader;
+import fileio.MovieInputData;
+import fileio.SerialInputData;
+import fileio.ShowInput;
+import fileio.UserInputData;
+import fileio.Writer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -15,7 +31,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringTokenizer;
 
 /**
  * The entry point to this homework. It runs the checker that tests your implentation.
@@ -31,8 +53,8 @@ public final class Main {
      * Handles "favorite" commands
      * */
     @SuppressWarnings("unchecked")
-    private static void favorite(ActionInputData action, Input input,
-            JSONObject output) {
+    private static void favorite(final ActionInputData action, final Input input,
+            final JSONObject output) {
         // Find the user that wants to add a show to favorite
         UserInputData user = null;
         for (UserInputData u : input.getUsers()) {
@@ -79,8 +101,8 @@ public final class Main {
      * Handles "view" commands
      * */
     @SuppressWarnings("unchecked")
-    private static void view(ActionInputData action, Input input, JSONObject
-            output) {
+    private static void view(final ActionInputData action, final Input input,
+            final JSONObject output) {
         // Find the user that wants to view a show
         UserInputData user = null;
         for (UserInputData u : input.getUsers()) {
@@ -109,8 +131,8 @@ public final class Main {
      * Handles "rating" commands
      * */
     @SuppressWarnings("unchecked")
-    private static void rating(ActionInputData action, Input input,
-            JSONObject output) {
+    private static void rating(final ActionInputData action, final Input input,
+            final JSONObject output) {
         // Find the user that wants to rate a show
         UserInputData user = null;
         for (UserInputData u : input.getUsers()) {
@@ -191,7 +213,7 @@ public final class Main {
     /**
      * Handles "command" actions
      * */
-    private static void command(ActionInputData action, Input input, JSONObject
+    private static void command(final ActionInputData action, final Input input, final JSONObject
             output) {
         switch (action.getType()) {
             case Constants.FAVORITE:
@@ -211,7 +233,7 @@ public final class Main {
      * Handles "average" queries
      * */
     @SuppressWarnings("unchecked")
-    private static void average(ActionInputData action, Input input, JSONObject
+    private static void average(final ActionInputData action, final Input input, final JSONObject
             output) {
         // Add all actors to maps keeping track of their total rating and the
         // number of shows they play in
@@ -224,7 +246,7 @@ public final class Main {
                 continue;
             }
             for (String actor : movie.getCast()) {
-                rating.putIfAbsent(actor, (double)0);
+                rating.putIfAbsent(actor, (double) 0);
                 count.putIfAbsent(actor, 0);
 
                 rating.put(actor, rating.get(actor) + movie.getRating());
@@ -237,7 +259,7 @@ public final class Main {
                 continue;
             }
             for (String actor : serial.getCast()) {
-                rating.putIfAbsent(actor, (double)0);
+                rating.putIfAbsent(actor, (double) 0);
                 count.putIfAbsent(actor, 0);
 
                 rating.put(actor, rating.get(actor) + serial.getRating());
@@ -301,7 +323,7 @@ public final class Main {
      * Handles "awards" queries
      * */
     @SuppressWarnings("unchecked")
-    private static void awards(ActionInputData action, Input input, JSONObject
+    private static void awards(final ActionInputData action, final Input input, final JSONObject
             output) {
         // Add all actors who have all awards required in a map, together with
         // the total ammount of said awards.
@@ -313,7 +335,7 @@ public final class Main {
         for (ActorInputData actor : input.getActors()) {
             hasAwards = true;
             // Check for each award in the filter
-            for(String award : action.getFilters().get(Constants.AWARDS_INDEX)) {
+            for (String award : action.getFilters().get(Constants.AWARDS_INDEX)) {
                 if (!actor.getAwards().containsKey(ActorsAwards.valueOf(award))) {
                     hasAwards = false;
                 }
@@ -376,8 +398,8 @@ public final class Main {
      * Handles "filter_description" queries
      * */
     @SuppressWarnings("unchecked")
-    private static void filterDescription(ActionInputData action, Input input, JSONObject
-            output) {
+    private static void filterDescription(final ActionInputData action, final Input input,
+            final JSONObject output) {
         // Add all actors with all keywords to an array list
         ArrayList<String> actors = new ArrayList<>();
         boolean hasAllKeywords;
@@ -435,17 +457,17 @@ public final class Main {
      * Checks whether a show fits some filters
      * */
     @SuppressWarnings("RedundantIfStatement")
-    private static boolean checkFilters(List<List<String>> filters, ShowInput show) {
+    private static boolean checkFilters(final List<List<String>> filters, final ShowInput show) {
         // Check the year filter
         if (filters.get(Constants.YEAR_INDEX).get(0) != null
                 && filters.get(Constants.YEAR_INDEX).get(0)
-                .compareTo(Integer.toString( show.getYear() ) ) != 0) {
+                .compareTo(Integer.toString(show.getYear())) != 0) {
             return false;
         }
         // Check the genre filter
         if (filters.get(Constants.GENRE_INDEX).get(0) != null
-                && !show.getGenres().contains( filters
-                .get(Constants.GENRE_INDEX).get(0) ) ) {
+                && !show.getGenres().contains(filters
+                .get(Constants.GENRE_INDEX).get(0))) {
             return false;
         }
 
@@ -456,7 +478,8 @@ public final class Main {
      * Handles "rating" queries
      * */
     @SuppressWarnings("unchecked")
-    private static void ratingQuery(ActionInputData action, Input input, JSONObject output) {
+    private static void ratingQuery(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Add all rated shows to an array list that have a rating different
         // from 0 and fit all the filters
         ArrayList<RatedShow> shows = new ArrayList<>();
@@ -522,7 +545,8 @@ public final class Main {
      * Handles "favorite" queries
      * */
     @SuppressWarnings("unchecked")
-    private static void favoriteQuery(ActionInputData action, Input input, JSONObject output) {
+    private static void favoriteQuery(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Add all favouited shows from user's data to a hashmap, counting the number of favorites
         // for each show
         HashMap<String, Integer> showsMap = new HashMap<>();
@@ -608,7 +632,8 @@ public final class Main {
      * Handles "longest" queries
      * */
     @SuppressWarnings("unchecked")
-    private static void longest(ActionInputData action, Input input, JSONObject output) {
+    private static void longest(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Add all shows that fit the filters to an array list
         ArrayList<DurationShow> shows = new ArrayList<>();
 
@@ -673,7 +698,8 @@ public final class Main {
      * Handles "most_viewed" queries
      * */
     @SuppressWarnings("unchecked")
-    private static void mostViewed(ActionInputData action, Input input, JSONObject output) {
+    private static void mostViewed(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Add all viewed shows into a map
         HashMap<String, Integer> showsMap = new HashMap<>();
         for (UserInputData user : input.getUsers()) {
@@ -692,8 +718,8 @@ public final class Main {
             // Search for the show in the appropiate show type
             if (action.getObjectType().equals(Constants.MOVIES)) {
                 for (MovieInputData movie : input.getMovies()) {
-                    if (movie.getTitle().equals(show) && checkFilters(action.getFilters(), movie))
-                    {
+                    if (movie.getTitle().equals(show) && checkFilters(action.getFilters(),
+                            movie)) {
                         shows.add(new ViewedShow(show, showsMap.get(show)));
                     }
                 }
@@ -752,7 +778,8 @@ public final class Main {
      * Handles "num_ratings" queries
      * */
     @SuppressWarnings("unchecked")
-    private static void numberOfRatings(ActionInputData action, Input input, JSONObject output) {
+    private static void numberOfRatings(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Add all users and their number of ratings to a list
         ArrayList<RatingUser> users = new ArrayList<>();
         for (UserInputData user : input.getUsers()) {
@@ -805,7 +832,7 @@ public final class Main {
     /**
      * Handles "query" actions
      * */
-    private static void query(ActionInputData action, Input input, JSONObject
+    private static void query(final ActionInputData action, final Input input, final JSONObject
             output) {
         switch (action.getCriteria()) {
             case Constants.AVERAGE:
@@ -840,7 +867,7 @@ public final class Main {
     /**
      * Finds the user based on their username
      * */
-    private static UserInputData findUser(ActionInputData action, Input input) {
+    private static UserInputData findUser(final ActionInputData action, final Input input) {
         for (UserInputData user : input.getUsers()) {
             if (user.getUsername().equals(action.getUsername())) {
                 return user;
@@ -854,7 +881,8 @@ public final class Main {
      * Handles "standard" recommendations
      * */
     @SuppressWarnings("unchecked")
-    public static void standard(ActionInputData action, Input input, JSONObject output) {
+    public static void standard(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Find the user who's asking for a recommandation
         UserInputData user = findUser(action, input);
 
@@ -890,7 +918,8 @@ public final class Main {
      * Handles "best_unseen" recommendations
      * */
     @SuppressWarnings("unchecked")
-    public static void bestUnseen(ActionInputData action, Input input, JSONObject output) {
+    public static void bestUnseen(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Find the user who's asking for a recommandation
         UserInputData user = findUser(action, input);
 
@@ -932,7 +961,7 @@ public final class Main {
     /**
      * Returns a show's input data based on its title
      * */
-    private static ShowInput findShow(String title, Input input) {
+    private static ShowInput findShow(final String title, final Input input) {
         // Search through all movies
         for (MovieInputData movie : input.getMovies()) {
             if (movie.getTitle().equals(title)) {
@@ -953,7 +982,7 @@ public final class Main {
     /**
      * Finds all shows in a given genre
      * */
-    private static ArrayList<ShowInput> findAllGenreShows(String genre, Input input) {
+    private static ArrayList<ShowInput> findAllGenreShows(final String genre, final Input input) {
         ArrayList<ShowInput> shows = new ArrayList<>();
 
         // Search through all movies
@@ -976,7 +1005,8 @@ public final class Main {
      * Handles "popular" recommendations
      * */
     @SuppressWarnings("unchecked")
-    public static void popular(ActionInputData action, Input input, JSONObject output) {
+    public static void popular(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Find the user who's asking for a recommandation
         UserInputData user = findUser(action, input);
 
@@ -1054,7 +1084,8 @@ public final class Main {
      * Handles "favorite" recommendations
      * */
     @SuppressWarnings("unchecked")
-    public static void favoriteRecom(ActionInputData action, Input input, JSONObject output) {
+    public static void favoriteRecom(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Find the user who's asking for a recommandation
         UserInputData user = findUser(action, input);
 
@@ -1108,7 +1139,8 @@ public final class Main {
      * Handles "search" recommendations
      * */
     @SuppressWarnings("unchecked")
-    public static void search(ActionInputData action, Input input, JSONObject output) {
+    public static void search(final ActionInputData action, final Input input, final
+            JSONObject output) {
         // Find the user who's asking for a recommandation
         UserInputData user = findUser(action, input);
 
@@ -1153,7 +1185,8 @@ public final class Main {
     /**
      * Handles "recommendation" actions
      * */
-    public static void recommendation(ActionInputData action, Input input, JSONObject output) {
+    public static void recommendation(final ActionInputData action, final Input input, final
+            JSONObject output) {
         switch (action.getType()) {
             case Constants.STANDARD:
                 standard(action, input, output);

@@ -1,10 +1,10 @@
 package dbentities;
 
-public class RatedGenre {
+public final class RatedGenre {
     private final String name;
     private final int rating;
 
-    public RatedGenre(String name, int rating) {
+    public RatedGenre(final String name, final int rating) {
         this.name = name;
         this.rating = rating;
     }
